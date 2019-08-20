@@ -1,13 +1,15 @@
 const express = require('express');
-const express = require('express');
 const bodyParser = require('body-parser');
 const helmet = require('helmet');
 const routes = require('./routes');
 const mongoose = require('mongoose');
-const config = require('./config/app.json');
+const config = require('./config/env.json');
 const PORT = 3002;
 
-mongoose.connect(`${config.url}${config.host}:${config.port}/${config.db}`, { useNewUrlParser: true });
+mongoose.connect(`${config.url}${config.host}:${config.port}/${config.db}`, { 
+  useNewUrlParser: true,
+  useCreateIndex: true,
+});
 
 let db = mongoose.connection;
 
