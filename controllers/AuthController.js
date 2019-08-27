@@ -52,6 +52,26 @@ const checkPassword = (password, hash) => {
   return bcrypt.compare(password, hash).then(res => res).catch(err => console.log(err));
 }
 
+exports.verify = (req, res) => {
+  const token = req.body.token
+  try {
+    jwt.verify(token, config.jwt_config.secret, (error, decoded) => {
+      if (error) {
+        res.json({
+          error: "Token Expired",
+          valid: false
+        });
+      } else {
+        res.json({
+          valid: true
+        });  
+      }
+    })
+  } catch(err) {
+    console.log(err)
+  }
+}
+
 exports.login = (req, res) => {
   const {
     email,
