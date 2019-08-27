@@ -24,7 +24,7 @@ exports.register = (req, res) => {
               res.json({error: 'User already exists, please login to continue'})
             } else {
               User.create({ firstName, lastName, email, password: hash, registration_date }).then((result) => {
-                res.json({user: result});
+                res.json({success: true});
               }).catch((err) => {
                 res.json({error: err});
               })
