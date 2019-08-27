@@ -3,24 +3,32 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const config = require('../config/app.json');
 const saltRounds = 10;
+
 exports.register = (req, res) => {
   const {
-      name,
+      firstName,
+      lastName,
       email,
       password,
-  } = req.body.formData;
-
+  } = req.body;
   try {
-    if (!!name && !!email && !!password) {
+    if (!!firstName && !!lastName && !!email && !!password) {
       const registration_date = Date.now();
       bcrypt.hash(password, saltRounds, (err, hash) => {
         if (err) {
           throw new Error("There was an error saving your password");
         } else {
-          User.create({ name, email, password: hash, registration_date }).then((result) => {
-            res.json({user: result});
-          }).catch((err) => {
-            res.json({error: err});
+          User.findOne({email : email}, function(err, user) {
+            if (err) { console.log(err) }
+            if (user) {
+              res.json({error: 'User already exists, please login to continue'})
+            } else {
+              User.create({ firstName, lastName, email, password: hash, registration_date }).then((result) => {
+                res.json({user: result});
+              }).catch((err) => {
+                res.json({error: err});
+              })
+            }
           })
         }
       });
