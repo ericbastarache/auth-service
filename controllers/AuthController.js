@@ -44,10 +44,6 @@ exports.register = (req, res) => {
   }
 }
 
-// const setToken = () => {
-
-// }
-
 const checkPassword = (password, hash) => {
   return bcrypt.compare(password, hash).then(res => res).catch(err => console.log(err));
 }
@@ -69,6 +65,19 @@ exports.verify = (req, res) => {
     })
   } catch(err) {
     console.log(err)
+  }
+}
+
+exports.generate_token = (req, res) => {
+  const token = req.body.token
+  if (token) {
+    const expiresIn = 24 * 60 * 60;
+    const signedToken = jwt.sign({id: token}, config.jwt_config.secret, {
+      expiresIn: expiresIn
+    });
+    res.status(200).send({
+      token: signedToken
+    });
   }
 }
 
